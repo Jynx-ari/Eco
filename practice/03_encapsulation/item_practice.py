@@ -37,4 +37,4 @@ print(apple.restock(5))      # True
 print(apple.get_quantity())  # 15
 #
 # This direct access should no longer work:
-print(apple.quantity)
+print(apple.__quantity)
