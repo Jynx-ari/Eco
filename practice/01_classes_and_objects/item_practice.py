@@ -26,9 +26,9 @@ class Items:
     def sell(self, amount: int):
       absamount = toNum(amount)
       if type(absamount) == float or type(absamount) == str:
-        return
+        return False
       if absamount <= 0:
-        return
+        return False
       if absamount > self.quantity:
           print("Not enough stock!")
           print(f"Only {self.quantity} are available")
