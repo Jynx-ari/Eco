@@ -49,9 +49,11 @@ class Market:
             if item.name.lower() == item_name.lower():
                 result = item.sell(amount)
                 #costs = amount * item.price
-                 
+                if result == False:
+                    return
+                
                 return result, amount * item.price, item.quantity
-        return False
+        return
         
 
     def show_items(self):
