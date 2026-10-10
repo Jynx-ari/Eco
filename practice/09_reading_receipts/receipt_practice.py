@@ -20,8 +20,9 @@ def print_receipt(receipt):
     # Then stop this function using return.
     #
     # Hint: compare receipt with None.
-    if receipt == None:
-        return print("Purchase Failed")
+    if receipt is None:
+        print("Purchase Failed")
+        return None
     # TODO 2:
     # If a receipt exists, print these details using its dictionary keys:
     # Item: Apple
