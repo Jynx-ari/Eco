@@ -42,8 +42,9 @@ market.add_item(iron)
 market.list_items()
 
 find_item, found = market.find_item("Apple")  # should return the apple item and True
-print(find_item, found)
-
+print(find_item.name, found)
+print(find_item.quantity, found)
+print(find_item.price, found)
 
 
 # Expected information to display:
