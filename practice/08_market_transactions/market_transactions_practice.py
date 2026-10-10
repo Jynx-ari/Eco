@@ -2,13 +2,7 @@
 #
 # Goal:
 # Let a customer buy an item if they have enough money and receive a receipt.
-#
-# This builds on Practice 07:
-# - Item manages its own stock.
-# - Market finds the item and coordinates the purchase.
-# - A purchase succeeds only if stock and customer balance are sufficient.
-# - A successful purchase returns a receipt dictionary.
-# - A failed purchase returns None.
+# The market also remembers successful purchases in transaction_history.
 #
 # Run with:
 #     python practice/08_market_transactions/market_transactions_practice.py
@@ -33,6 +27,7 @@ class Market:
         self.name = name
         self.customer_balance = customer_balance
         self.items = []
+        self.transaction_history = []
 
     def add_item(self, item):
         self.items.append(item)
@@ -43,23 +38,21 @@ class Market:
         # Return None if the purchase fails.
         for item in self.items:
             if item.name.lower() == item_name.lower():
-                # Validate the amount before calculating the cost.
                 if type(amount) != int or amount <= 0 or amount > item.quantity:
                     return None
 
                 total_cost = amount * item.price
 
-                # Do not take stock or money if the customer cannot pay.
                 if total_cost > self.customer_balance:
                     return None
 
-                # The checks passed, so complete the purchase.
+                # Complete the purchase only after all checks pass.
                 if not item.sell(amount):
                     return None
 
                 self.customer_balance -= total_cost
 
-                return {
+                receipt = {
                     "success": True,
                     "item": item.name,
                     "quantity": amount,
@@ -67,6 +60,10 @@ class Market:
                     "remaining_stock": item.quantity,
                     "remaining_balance": self.customer_balance,
                 }
+
+                # Only successful purchases belong in the history.
+                self.transaction_history.append(receipt)
+                return receipt
 
         return None
 
@@ -78,11 +75,8 @@ class Market:
 
 if __name__ == "__main__":
     market = Market("Little Market", 50)
-    apple = Item("Apple", 10, 5)
-    iron = Item("Iron", 3, 30)
-
-    market.add_item(apple)
-    market.add_item(iron)
+    market.add_item(Item("Apple", 10, 5))
+    market.add_item(Item("Iron", 3, 30))
 
     print("Buying 4 apples (cost: 20):")
     print(market.buy_item("apple", 4))
@@ -106,7 +100,10 @@ if __name__ == "__main__":
     print(f"Customer balance: {market.customer_balance}")
     market.show_items()
 
+    print(f"Successful transactions recorded: {len(market.transaction_history)}")
+
     # Expected final balance: 0
     # Expected final stock:
     # Apple: 6 in stock
     # Iron: 2 in stock
+    # Expected transaction history length: 2
