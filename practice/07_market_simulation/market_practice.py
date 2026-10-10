@@ -23,9 +23,9 @@ class Item:
         # Return False if amount is zero/negative OR greater than the stock.
         # Otherwise subtract amount from quantity and return True.
         if amount <= 0 or amount > self.quantity or type(amount) != int:
-            return
+            return False
         self.quantity -= amount
-        return self.quantity, True
+        return True
 
 class Market:
     def __init__(self, name):
@@ -42,7 +42,8 @@ class Market:
         # If not found, return False.
         for item in self.items:
             if item.name.lower() == item_name.lower():
-                return item.sell(amount)
+                result = item.sell(amount)
+                return result
         return False
 
     def show_items(self):
