@@ -87,16 +87,20 @@ if __name__ == "__main__":
     print("Buying 4 apples (cost: 20):")
     print(market.buy_item("apple", 4))
 
-    print("\\nTrying to buy 2 iron (cost: 60, but only 30 remains):")
+    print()
+    print("Trying to buy 2 iron (cost: 60, but only 30 remains):")
     print(market.buy_item("IRON", 2))  # None; no money or stock is changed
 
-    print("\\nBuying 1 iron (cost: 30):")
+    print()
+    print("Buying 1 iron (cost: 30):")
     print(market.buy_item("IRON", 1))
 
-    print("\\nBuying missing gold:")
+    print()
+    print("Buying missing gold:")
     print(market.buy_item("Gold", 1))  # None
 
-    print("\\nTrying to buy too many apples:")
+    print()
+    print("Trying to buy too many apples:")
     print(market.buy_item("Apple", 99))  # None
 
     print(f"Customer balance: {market.customer_balance}")
