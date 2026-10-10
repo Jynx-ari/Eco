@@ -39,23 +39,38 @@ class Customer:
     # Write __init__(self, name, balance).
     # Store name and balance on this customer using self.
     # Create self.transaction_history as a NEW empty list for each customer.
-    pass
+    currency = "PHP"
+    currency_symbol = "P"
+
+    def __init__(self, name, balance: int):
+        self.name = name
+        self.balance: int = balance
+        self.transaction_history = []
 
     # TODO 2 — Lessons 02 and 09:
     # Write show_balance(self) to print this customer's name and balance,
     # including the shared currency attribute.
+    def show_balance(self, show_details=True):
+        if show_details:
+            print(f"\n=== {self.name}'s Balance ===")
+            print(f"Currency: {self.currency}")
+            print(f"Balance: {self.currency_symbol}{self.balance}")
+            print("===========================")
+        return self.balance
 
 
 class Item:
-    # TODO 3 — Lessons 01–03:
-    # Write __init__(self, name, quantity, price).
-    # Store all three values as instance attributes.
-    pass
+    def __init__(self, name, quantity, price):
+        self.name = name
+        self.quantity = quantity
+        self.price = price
 
-    # TODO 4 — Lessons 03, 06, and 07:
-    # Write sell(self, amount).
-    # Return False if amount is not an integer, is <= 0, or exceeds stock.
-    # Otherwise subtract amount from quantity and return True.
+    def sell(self, amount):
+       
+        if amount <= 0 or amount > self.quantity or type(amount) != int:
+            return False
+        self.quantity -= amount
+        return True
 
 
 class Market:
@@ -65,9 +80,15 @@ class Market:
     # and create self.sales_history as an empty list.
     # These lists must belong to each Market object, not the class.
     pass
-
+    def __init__(self, name):
+        self.name = name
+        self.items = []
+        self.sales_history = []
     # TODO 6 — Lessons 04 and 06:
     # Write add_item(self, item) to append an Item object to self.items.
+
+    def add_item(self, item):
+        self.items.append(item)
 
     # TODO 7 — Lessons 06–08:
     # Write buy_item(self, customer, item_name, amount).
@@ -89,9 +110,85 @@ class Market:
     # For this lesson, buying a study pass is still an ordinary purchase.
     # We will add quiz behavior in later lessons.
 
+    def buy_item(self, customer, item_name, amount):
+        for item in self.items:
+            if item.name.lower() == item_name.lower():
+                if type(amount) != int or amount <= 0 or amount > item.quantity:
+                    return None
+
+                total_cost = amount * item.price
+                if total_cost > customer.balance:
+                    return None
+
+                # Complete the purchase only after all checks pass.
+                if not item.sell(amount):
+                    return None
+
+                customer.balance -= total_cost
+
+                receipt = {
+                    "customer": customer.name,
+                    "success": True,
+                    "item": item.name,
+                    "quantity": amount,
+                    "total_cost": total_cost,
+                    "remaining_stock": item.quantity,
+                    "remaining_balance": customer.balance,
+                }
+
+                # Only successful purchases belong in the history.
+                customer.transaction_history.append(receipt)
+                self.sales_history.append(receipt)
+                return receipt
+
+        return None
+
     # TODO 8 — Lesson 09:
     # Write show_sales_history(self).
     # Loop through self.sales_history and print useful receipt fields.
+    def show_sales_history(self):
+        print(f"\n=== {self.name} Sales History ===")
+        if not self.sales_history:
+            print("No sales recorded yet.")
+            return
+
+        for index, sales in enumerate(self.sales_history, start=1):
+            print(f"\nSale #{index}")
+            print(f"Customer: {sales['customer']}")
+            print(f"Item: {sales['item']}")
+            print(f"Quantity: {sales['quantity']}")
+            print(f"Total Cost: P{sales['total_cost']}")
+            print(f"Remaining Stock: {sales['remaining_stock']}")
+            print(f"Balance Left: P{sales['remaining_balance']}")
+        print("==============================")
+
+
+def print_receipt(receipt):
+    if receipt is None:
+        print("\nPurchase failed. Please check the quantity, stock, or balance.")
+        return
+
+    print("\n==============================")
+    print("PURCHASE RECEIPT")
+    print("==============================")
+    print(f"Customer: {receipt['customer']}")
+    print(f"Item: {receipt['item']}")
+    print(f"Quantity: {receipt['quantity']}")
+    print(f"Total Cost: P{receipt['total_cost']}")
+    print(f"Remaining Stock: {receipt['remaining_stock']}")
+    print(f"Remaining Balance: P{receipt['remaining_balance']}")
+    print("==============================")
+
+
+def print_transaction_history(history):
+    print(f"\n=== {history[0]['customer']}'s Transaction History ===")
+    for index, entry in enumerate(history, start=1):
+        print(f"\nTransaction #{index}")
+        print(f"Item: {entry['item']}")
+        print(f"Quantity: {entry['quantity']}")
+        print(f"Total Cost: P{entry['total_cost']}")
+        print(f"Remaining Balance: P{entry['remaining_balance']}")
+    print("=======================================")
 
 
 if __name__ == "__main__":
@@ -108,7 +205,21 @@ if __name__ == "__main__":
     # Buy one Math Practice Pass for Alex and print the returned receipt.
     # Show Alex's balance and personal transaction history.
     # Show the market's sales history.
-    pass
+    market = Market("CAET Study Market")
+    alex = Customer("Alex", 100)
+    math_pass = Item("Math Practice Pass", 10, 20)
+    english_pass = Item("English Practice Pass", 10, 20)
+    science_pass = Item("Science Practice Pass", 10, 20)
+    mental_ability_pass = Item("Mental Ability Practice Pass", 10, 20)
+    market.add_item(math_pass)
+    market.add_item(english_pass)
+    market.add_item(science_pass)
+    market.add_item(mental_ability_pass)
+    receipt = market.buy_item(alex, "Math Practice Pass", 1)
+    print_receipt(receipt)
+    alex.show_balance()
+    print_transaction_history(alex.transaction_history)
+    market.show_sales_history()
 
     # TODO 10 — Test the rules from Lessons 03 and 08:
     # Try to buy more passes than Alex can afford.
@@ -118,3 +229,26 @@ if __name__ == "__main__":
     #
     # Also test a missing item name and an invalid quantity such as 0.
     # Confirm that failed purchases do not change customer or market state.
+    
+    before_balance = alex.balance
+    before_stock = math_pass.quantity
+    before_customer_history = len(alex.transaction_history)
+    before_market_history = len(market.sales_history)
+
+    error_receipt = market.buy_item(alex, "Math Practice Pass", 10)
+    print_receipt(error_receipt)
+
+    if before_balance == alex.balance and before_stock == math_pass.quantity and before_customer_history == len(alex.transaction_history) and before_market_history == len(market.sales_history):
+        print("\nFailed purchase was rejected safely. No customer or market state changed.")
+    else:
+        print("\nUnexpected change after failed purchase.")
+
+    missing_item_receipt = market.buy_item(alex, "History Pass", 1)
+    print_receipt(missing_item_receipt)
+
+    invalid_quantity_receipt = market.buy_item(alex, "Math Practice Pass", 0)
+    print_receipt(invalid_quantity_receipt)
+
+    alex.show_balance()
+    market.show_sales_history()
+
