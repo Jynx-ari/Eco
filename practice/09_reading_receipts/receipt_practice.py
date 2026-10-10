@@ -20,7 +20,8 @@ def print_receipt(receipt):
     # Then stop this function using return.
     #
     # Hint: compare receipt with None.
-
+    if receipt == None:
+        return print("Purchase Failed")
     # TODO 2:
     # If a receipt exists, print these details using its dictionary keys:
     # Item: Apple
@@ -30,7 +31,15 @@ def print_receipt(receipt):
     #
     # Use receipt["item"], receipt["quantity"],
     # receipt["total_cost"], and receipt["remaining_stock"].
-    pass
+    else:
+        print(f"""
+        Item: {receipt["item"]}
+        Quantity: {receipt["quantity"]}
+        Total: {receipt["total_cost"]}
+        Remaining Stock: {receipt["remaining_stock"]}""")
+        return True
+
+    
 
 
 # Example receipt, similar to the one returned in Practice 08.
