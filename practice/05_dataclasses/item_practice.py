@@ -15,28 +15,38 @@ from dataclasses import dataclass
 # name: str
 # quantity: int
 # price: float
+@dataclass
 class Item:
-    def __init__(self, name, quantity, price):
-        self.name = name
-        self.quantity = quantity
-        self.price = price
+    name: str
+    quantity: int
+    price: float
 
 
 # TODO 2:
 # Create two Item objects:
 # apple: name="Apple", quantity=10, price=5
 # iron: name="Iron", quantity=3, price=30
-#
+
+apple = Item(name="Apple", quantity=10, price=5)
+iron = Item(name="Iron", quantity=3, price=30)
+
 # TODO 3:
 # Print apple and iron directly.
 # Before you change the class, Python prints a generic object representation.
 # After you add @dataclass and the fields, the output should show the field names
 # and their values, something like:
 # Item(name='Apple', quantity=10, price=5)
-#
+
+print(apple)
+print(iron)
+
 # TODO 4 (experiment):
 # Print apple.name and apple.quantity separately.
-#
+
+print(apple.name)
+print(apple.quantity)
+print(apple.price)
+
 # Questions to answer in comments:
 # 1. Which lines of code did @dataclass let you remove?
 # 2. Does @dataclass stop you from changing apple.quantity later?
