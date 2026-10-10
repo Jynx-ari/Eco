@@ -44,6 +44,16 @@ class Market:
         # 3. Ask the item to sell the amount.
         # 4. Only if that succeeds, calculate and return the total cost.
         # 5. If no matching item exists, return None.
+
+        def makeReceipt(success, itemname, total_cost, quant):
+            result = {
+                    "success": True,
+                    "item": itemname,
+                    "quantity": amount,
+                    "total_cost": total_cost,
+                    "remaining_stock": quant
+            }
+            return result
         
         for item in self.items:
             if item.name.lower() == item_name.lower():
@@ -52,7 +62,7 @@ class Market:
                 if result == False:
                     return
                 
-                return result, amount * item.price, item.quantity
+                return makeReceipt(result, item.name, amount * item.price, item.quantity)
         return
         
 
