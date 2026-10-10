@@ -1,73 +1,51 @@
 # Practice 09 — Reading Purchase Receipts
 #
 # Goal:
-# Use the dictionary returned by Market.buy_item().
+# Print the receipt returned by Market.buy_item().
 #
-# In Practice 08, buy_item() returns either:
-# - a dictionary describing a successful purchase, or
-# - None when the purchase fails.
+# This file reuses the Item and Market classes from Practice 08.
+# It does not define a second copy of those classes.
 #
-# Your task is to finish print_receipt() so it can handle both cases.
-#
-# Run with:
-#     python receipt_practice.py
+# Run from the repository root:
+#     python practice/09_reading_receipts/receipt_practice.py
+
+import importlib.util
+from pathlib import Path
 
 
 def print_receipt(receipt):
-    # TODO 1:
-    # If receipt is None, print:
-    # Purchase failed.
-    # Then stop this function using return.
-    #
-    # Hint: compare receipt with None.
     if receipt is None:
-        print("Purchase Failed")
-        return None
-    # TODO 2:
-    # If a receipt exists, print these details using its dictionary keys:
-    # Item: Apple
-    # Quantity: 4
-    # Total: 20
-    # Remaining stock: 6
-    #
-    # Use receipt["item"], receipt["quantity"],
-    # receipt["total_cost"], and receipt["remaining_stock"].
-    else:
-        print(f"""
-        Item: {receipt["item"]}
-        Quantity: {receipt["quantity"]}
-        Total: {receipt["total_cost"]}
-        Remaining Stock: {receipt["remaining_stock"]}""")
-        return True
+        print("Purchase failed.")
+        return
 
-    
+    print(f"Item: {receipt['item']}")
+    print(f"Quantity: {receipt['quantity']}")
+    print(f"Total: {receipt['total_cost']}")
+    print(f"Remaining stock: {receipt['remaining_stock']}")
 
 
-# Example receipt, similar to the one returned in Practice 08.
-successful_receipt = {
-    "success": True,
-    "item": "Apple",
-    "quantity": 4,
-    "total_cost": 20,
-    "remaining_stock": 6,
-}
+# Load the existing market classes from Practice 08.
+practice_folder = Path(__file__).resolve().parents[1]
+market_file = practice_folder / "08_market_transactions" / "market_transactions_practice.py"
 
-failed_receipt = None
+spec = importlib.util.spec_from_file_location("market_transactions_practice", market_file)
+market_module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(market_module)
 
-print("Successful purchase:")
-print_receipt(successful_receipt)
+Market = market_module.Market
+Item = market_module.Item
 
-print()
 
-print("Failed purchase:")
-print_receipt(failed_receipt)
+if __name__ == "__main__":
+    market = Market("Little Market")
+    market.add_item(Item("Apple", 10, 5))
+    market.add_item(Item("Iron", 3, 30))
 
-# Expected output:
-# Successful purchase:
-# Item: Apple
-# Quantity: 4
-# Total: 20
-# Remaining stock: 6
-#
-# Failed purchase:
-# Purchase failed.
+    print("Successful purchase:")
+    receipt = market.buy_item("apple", 4)
+    print_receipt(receipt)
+
+    print()
+    print("Failed purchase:")
+    receipt = market.buy_item("Gold", 1)
+    print_receipt(receipt)
