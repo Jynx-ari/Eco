@@ -1,12 +1,16 @@
 # Practice 08 — Market Transactions
 #
 # Goal:
-# Extend the market so a customer can buy an item and learn the total cost.
+# Let a customer buy an item and receive a purchase receipt.
 #
-# This builds on Practice 07. There are two small TODOs.
+# This builds on Practice 07:
+# - Item manages its own stock.
+# - Market finds the item and delegates the sale to Item.
+# - A successful purchase returns a receipt dictionary.
+# - A failed purchase returns None.
 #
 # Run with:
-#     python market_transactions_practice.py
+#     python practice/08_market_transactions/market_transactions_practice.py
 
 
 class Item:
@@ -32,39 +36,23 @@ class Market:
         self.items.append(item)
 
     def buy_item(self, item_name, amount):
-        # TODO 1:
-        # Find the item by name, ignoring capitalization.
-        # If it doesn't exist, return None.
-        # If the sale fails, return None.
-        # If it succeeds, return the total cost (price * amount).
-        #
-        # Hint:
-        # 1. Loop through self.items.
-        # 2. Compare item.name.lower() with item_name.lower().
-        # 3. Ask the item to sell the amount.
-        # 4. Only if that succeeds, calculate and return the total cost.
-        # 5. If no matching item exists, return None.
-
-        def makeReceipt(success, itemname, total_cost, quant):
-            result = {
-                    "success": success,
-                    "item": itemname,
-                    "quantity": amount,
-                    "total_cost": total_cost,
-                    "remaining_stock": quant
-            }
-            return result
-        
+        # Find the item without worrying about capitalization.
+        # Return None if the item is missing or the sale fails.
+        # Otherwise, return a dictionary describing the purchase.
         for item in self.items:
             if item.name.lower() == item_name.lower():
-                result = item.sell(amount)
-                #costs = amount * item.price
-                if result == False:
-                    return
-                
-                return makeReceipt(result, item.name, amount * item.price, item.quantity)
-        return
-        
+                if not item.sell(amount):
+                    return None
+
+                return {
+                    "success": True,
+                    "item": item.name,
+                    "quantity": amount,
+                    "total_cost": amount * item.price,
+                    "remaining_stock": item.quantity,
+                }
+
+        return None
 
     def show_items(self):
         print(f"Items in {self.name}:")
@@ -72,27 +60,28 @@ class Market:
             print(f"{item.name}: {item.quantity} in stock")
 
 
-market = Market("Little Market")
-apple = Item("Apple", 10, 5)
-iron = Item("Iron", 3, 30)
+if __name__ == "__main__":
+    market = Market("Little Market")
+    apple = Item("Apple", 10, 5)
+    iron = Item("Iron", 3, 30)
 
-market.add_item(apple)
-market.add_item(iron)
+    market.add_item(apple)
+    market.add_item(iron)
 
-print("Buying 4 apples:")
-print(market.buy_item("apple", 4))  # Expected: 20
+    print("Buying 4 apples:")
+    print(market.buy_item("apple", 4))  # Receipt: total_cost is 20
 
-print("Buying 3 iron:")
-print(market.buy_item("IRON", 3))   # Expected: 90
+    print("Buying 3 iron:")
+    print(market.buy_item("IRON", 3))   # Receipt: total_cost is 90
 
-print("Buying missing gold:")
-print(market.buy_item("Gold", 1))   # Expected: None
+    print("Buying missing gold:")
+    print(market.buy_item("Gold", 1))   # None
 
-print("Trying to buy too many apples:")
-print(market.buy_item("Apple", 99)) # Expected: None
+    print("Trying to buy too many apples:")
+    print(market.buy_item("Apple", 99)) # None
 
-market.show_items()
+    market.show_items()
 
-# Expected final stock:
-# Apple: 6 in stock
-# Iron: 0 in stock
+    # Expected final stock:
+    # Apple: 6 in stock
+    # Iron: 0 in stock
