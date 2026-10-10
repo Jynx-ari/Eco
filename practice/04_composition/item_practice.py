@@ -26,7 +26,11 @@ class Market:
     def list_items(self):
         for item in self.items:
             print(f"{item.name} — quantity: {item.quantity}, price: {item.price}")
-
+    def find_item(self, item_name):
+        for item in self.items:
+            if item.name == item_name:
+                return item, True
+        return None, False
 
 market = Market("Little Market")
 apple = Items("Apple", 10, 5)
@@ -36,6 +40,9 @@ iron = Items("Iron", 3, 30)
 market.add_item(apple)
 market.add_item(iron)
 market.list_items()
+
+find_item, found = market.find_item("Apple")  # should return the apple item and True
+print(find_item, found)
 
 
 
