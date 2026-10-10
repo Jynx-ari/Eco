@@ -44,7 +44,15 @@ class Market:
         # 3. Ask the item to sell the amount.
         # 4. Only if that succeeds, calculate and return the total cost.
         # 5. If no matching item exists, return None.
-        pass
+        
+        for item in self.items:
+            if item.name.lower() == item_name.lower():
+                result = item.sell(amount)
+                #costs = amount * item.price
+                 
+                return result, amount * item.price, item.quantity
+        return False
+        
 
     def show_items(self):
         print(f"Items in {self.name}:")
