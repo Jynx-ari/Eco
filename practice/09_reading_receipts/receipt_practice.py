@@ -1,8 +1,7 @@
 # Practice 09 — Reading Purchase Receipts
 #
 # Goal:
-# Print the receipt returned by Market.buy_item().
-# Print the receipt returned by Market.buy_item(), including the remaining balance.
+# Print receipts returned by Market.buy_item() and review transaction history.
 #
 # This file reuses the Item and Market classes from Practice 08.
 # It does not define a second copy of those classes.
@@ -39,7 +38,6 @@ Item = market_module.Item
 
 
 if __name__ == "__main__":
-    market = Market("Little Market")
     market = Market("Little Market", 50)
     market.add_item(Item("Apple", 10, 5))
     market.add_item(Item("Iron", 3, 30))
@@ -49,8 +47,12 @@ if __name__ == "__main__":
     print_receipt(receipt)
 
     print()
-    print("Failed purchase:")
-    receipt = market.buy_item("Gold", 1)
     print("Unaffordable purchase:")
     receipt = market.buy_item("iron", 2)
     print_receipt(receipt)
+
+    print()
+    print("Transaction history:")
+    for saved_receipt in market.transaction_history:
+        print_receipt(saved_receipt)
+        print()
