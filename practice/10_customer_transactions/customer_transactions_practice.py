@@ -1,83 +1,94 @@
 # Lesson 10 — Customer Transactions
 #
 # Goal:
-# Model the customer separately from the market.
-# The customer owns their money and personal transaction history.
-# The market owns its items and sales history.
+# Combine the ideas from Lessons 01–09 into one small market simulation.
 #
-# Rules for this lesson:
-# - Write the classes again from scratch; do not import earlier lessons.
-# - Keep all Lesson 10 code in this folder.
-# - Complete one TODO at a time and run this file after each step.
+# Revisit these ideas as you work:
+# - Lessons 01–02: classes, objects, __init__, self, attributes, and methods
+# - Lesson 03: validate data before changing it
+# - Lesson 04: Market contains Item objects (composition)
+# - Lesson 05: ordinary classes are enough here; no dataclass is required
+# - Lesson 06: Market asks an Item object to perform its own sale
+# - Lesson 07: find an item by name and handle missing items
+# - Lesson 08: validate purchases and return a receipt dictionary
+# - Lesson 09: read receipts and loop through saved transaction history
+#
+# Lesson rule:
+# Rewrite the ideas here for practice. Do not import code from earlier
+# lesson folders. Keep any code reuse inside this Lesson 10 folder.
 
 
 class Customer:
-    # TODO 1:
-    # Add a class attribute named currency with the value "PHP".
-
-    # TODO 2:
+    # TODO 1 — Lessons 01–02:
+    # Add a class attribute: currency = "PHP".
+    #
     # Write __init__(self, name, balance).
-    # Store name and balance as instance attributes.
-    # Give every customer their own empty transaction_history list.
+    # Store name and balance on this customer using self.
+    # Create self.transaction_history as a NEW empty list for each customer.
     pass
 
-    # TODO 3:
-    # Write show_balance(self).
-    # Print the customer's name and current balance, using the currency.
+    # TODO 2 — Lessons 02 and 09:
+    # Write show_balance(self) to print this customer's name and balance,
+    # including the shared currency attribute.
 
 
 class Item:
-    # TODO 4:
+    # TODO 3 — Lessons 01–03:
     # Write __init__(self, name, quantity, price).
-    # Store these values as instance attributes.
+    # Store all three values as instance attributes.
     pass
 
-    # TODO 5:
+    # TODO 4 — Lessons 03, 06, and 07:
     # Write sell(self, amount).
     # Return False if amount is not an integer, is <= 0, or exceeds stock.
     # Otherwise subtract amount from quantity and return True.
 
 
 class Market:
-    # TODO 6:
+    # TODO 5 — Lessons 02 and 04:
     # Write __init__(self, name).
-    # Store the name, create an empty items list, and create an empty
-    # sales_history list. These lists belong to this Market object.
+    # Store the market name, create self.items as an empty list,
+    # and create self.sales_history as an empty list.
+    # These lists must belong to each Market object, not the class.
     pass
 
-    # TODO 7:
-    # Write add_item(self, item) to add an Item object to the market.
+    # TODO 6 — Lessons 04 and 06:
+    # Write add_item(self, item) to append an Item object to self.items.
 
-    # TODO 8:
+    # TODO 7 — Lessons 06–08:
     # Write buy_item(self, customer, item_name, amount).
-    # Find the item by name, ignoring capitalization.
-    # If the item is missing or the amount is invalid, return None.
-    # Calculate the total cost before changing any state.
-    # If the customer cannot afford it, return None.
-    # Ask the Item object to sell the amount; if it fails, return None.
-    # Only after all checks pass:
-    # - subtract the total cost from the customer's balance
-    # - create a receipt dictionary containing:
-    #   success, customer, item, quantity, total_cost,
-    #   remaining_stock, remaining_balance
-    # - append the receipt to both customer.transaction_history
-    #   and market.sales_history
-    # - return the receipt
+    #
+    # 1. Find the item by name, ignoring capitalization.
+    # 2. If the item is missing, return None.
+    # 3. Calculate total_cost = amount * item.price.
+    # 4. Reject invalid quantities and purchases the customer cannot afford.
+    # 5. Ask the Item object to sell the amount. If it fails, return None.
+    # 6. Only after validation and a successful sale, subtract total_cost
+    #    from customer.balance.
+    # 7. Create and return a receipt dictionary with:
+    #    success, customer, item, quantity, total_cost,
+    #    remaining_stock, remaining_balance.
+    # 8. Append that receipt to BOTH customer.transaction_history
+    #    and market.sales_history.
+    #
+    # Remember Lesson 03 / 08: check conditions before changing state.
 
-    # TODO 9:
-    # Write show_sales_history(self) to print the market's saved sales.
+    # TODO 8 — Lesson 09:
+    # Write show_sales_history(self).
+    # Loop through self.sales_history and print useful receipt fields.
 
 
 if __name__ == "__main__":
-    # TODO 10:
-    # Create a customer named Alex with 100 PHP.
+    # TODO 9 — Review Lessons 01–09:
+    # Create Alex with a balance of 100.
     # Create a market named "Little Market".
-    # Add 10 apples priced at 5 PHP each.
+    # Add 10 apples priced at 5 each.
     # Buy 2 apples for Alex and print the returned receipt.
-    # Print Alex's remaining balance and transaction history.
-    # Print the market's sales history.
-    #
-    # TODO 11:
-    # Try an unaffordable purchase and verify that the customer's balance,
-    # item stock, and both histories remain unchanged.
+    # Show Alex's balance and personal transaction history.
+    # Show the market's sales history.
     pass
+
+    # TODO 10 — Test the rules from Lessons 03 and 08:
+    # Try an unaffordable purchase.
+    # Confirm that balance, stock, customer history, and market history
+    # do not change when the purchase fails.
